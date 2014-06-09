@@ -93,7 +93,6 @@ describe("Ramen", function() {
 		it("should throw an error if the name is not provided", function() {
 			var name = "";
 			new Ramen().saveRamen(name);
-
 			sinon.assert.notCalled(console.log);
 			sinon.assert.calledOnce(console.error);
 			sinon.assert.calledWithExactly(console.error, "You did not give a name for your ramen")
@@ -102,7 +101,6 @@ describe("Ramen", function() {
 		it("should save the ingredients of the ramen wrapped by a given name", function() {
 			var myRamen = new Ramen();
 			myRamen.saveRamen("Blue Dragon House Ramen");
-
 			sinon.assert.notCalled(console.error);
 			sinon.assert.calledOnce(console.log);
 			sinon.assert.calledWithExactly(console.log, "Saved 'Blue Dragon House Ramen'");
