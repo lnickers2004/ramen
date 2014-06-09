@@ -1,0 +1,26 @@
+{
+  "name": "RamenTest",
+  "version": "1.0.0",
+  "description": "Ramen test module for GetHuman.com internship program",
+  "main": "ramen_test.js",
+  "dependencies": {
+    "chai": "^1.9.1",
+    "sinon": "^1.10.2"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.1"
+  },
+  "scripts": {
+    "test": "mocha ramen_test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xenonity/ramen"
+  },
+  "author": "Masaya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xenonity/ramen/issues"
+  },
+  "homepage": "https://github.com/xenonity/ramen"
+}
