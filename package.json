@@ -4,12 +4,12 @@
   "description": "Ramen test module for GetHuman.com internship program",
   "main": "ramen_test.js",
   "dependencies": {
-    "chai": "^1.9.1",
-    "mocha": "^1.20.1",
-    "sinon": "^1.10.2"
+    "chai": "1.9.1",
+    "mocha": "1.20.1",
+    "sinon": "1.10.2"
   },
   "devDependencies": {
-    "mocha": "^1.20.1"
+    "mocha": "1.20.1"
   },
   "scripts": {
     "test": "mocha ramen_test.js"
