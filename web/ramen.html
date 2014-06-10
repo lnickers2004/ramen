@@ -3,18 +3,230 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Ramen Test</title>
-	<link rel="stylesheet" media="all" href="test/mocha.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" media="all" href="http://cdnjs.cloudflare.com/ajax/libs/mocha/1.20.1/mocha.css">
 </head>
 <body>
 	<div id="mocha"><p><a href=".">Index</a></p></div>
 	<div id="messages"></div>
 	<div id="fixtures"></div>
-	<script src="test/mocha.js"></script>
-	<script src="test/chai.js"></script>
-	<script src="test/sinon-1.10.2.js"></script>
-	<script src="ramen_web.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/mocha/1.20.1/mocha.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/chai/1.9.1/chai.min.js"></script>
+	<script src="http://sinonjs.org/releases/sinon-1.10.1.js"></script>
+	<script>
+	(function(exports) {
+		"use strict";
+
+		function Ramen(ingredients) { 
+			if (!ingredients){ 
+				var defaults = ["Sliced Pork", "Scallions", "Miso", "Thin", "Nori"];
+				this.list 		= defaults;
+				this.meat 		= defaults[0];
+				this.vegetable 	= defaults[1];
+				this.broth 		= defaults[2]; 
+				this.noodle 	= defaults[3]; 
+				this.topping 	= defaults[4];
+				this.extra 		= false;
+				this.side 		= false;
+			} else { 
+				if (ingredients.length != 5) { throw new Error('Not enough ingredients (meat, vegetable, broth, noodle, topping)'); }
+				this.list 		= ingredients;
+				this.meat 		= ingredients[0];
+				this.vegetable 	= ingredients[1];
+				this.broth 		= ingredients[2]; 
+				this.noodle 	= ingredients[3]; 
+				this.topping	= ingredients[4];
+				this.extra 		= false;
+				this.side 		= false;
+			}
+		}
+
+		exports.Ramen = Ramen;
+
+		Ramen.prototype = {
+			addExtra: function(extra) {
+				if (!extra) { throw new Error("What ingredient do you want to add more?"); }
+				this.extra = extra;
+				return "Adding extra " + extra + " to your ramen";
+			},
+
+			changeBroth: function(replacement) {
+				if (!replacement) { throw new Error("What do you want to replace your broth with?"); }
+				var old = this.broth;
+				this.broth = replacement; 
+				return "Changed broth from " + old + " to " + replacement;
+			},
+
+			checkout: function(){
+				if (!this) { throw new Error("Did you order a ramen?") }			
+				var subtotal = 12.99;
+				var tax 	 = subtotal * 0.15;
+				var tips	 = (subtotal + tax) * 0.15;
+				var options  = (this.extra) ? 1.99 : 0;
+				var side     = (this.side) ? 0.99: 0;
+				var total 	 = subtotal + tax + tips + options + side;
+				return "Your total is $" + Math.round(total * 100) / 100; 
+			},
+			
+			addSideOrder: function(side) { 
+				if (!side) { throw new Error("What side do you want to add more?") }
+				this.side = side; 
+				return "Added " + side + " as a side order";
+			},
+			
+			saveRamen: function(name) {
+				if (!name) { return console.error("You did not give a name for your ramen") }
+				// ....some code to save the ingredients...
+				console.log("Saved '" + name + "'");
+			},
+
+			randomize: function() {
+				var meat 		= ["Sliced Pork", "Ground Pork", "Sliced Beef", "Braised Pork"];
+				var vegetable 	= ["Spinach", "Bok Choi", "Lettuce", "Scallion"];
+				var broth 		= ["Shio (Salt)", "Tonkotsu (Pork)", "Shoyu (Soy-Sauce base)", "Miso"];
+				var noodle 		= ["Extra Thin", "Thin", "Thick", "Extra Thick"];
+				var topping 	= ["Menma", "Naruto", "Nori Seaweed", "Half-Boiled Egg"];
+
+				var list = [];
+				for (var i=0; i < 5; i++) { list.push(Math.floor(Math.random() * 4)); }
+
+				return new Ramen([ meat[list[0]], vegetable[list[1]], broth[list[2]], noodle[list[3]], topping[list[4]] ]);
+			}
+		}
+	}) (this);
+	</script>
 	<script>mocha.setup('bdd')</script>
-	<script src="ramen_web_test.js"></script>
+	<script>
+	var expect = chai.expect;
+
+	describe("Ramen", function() { 
+		describe("#make", function() {
+			it("should make a ramen with default ingredients if none are provided", function() {
+				var testRamen = new Ramen();
+				expect(testRamen.meat		).to.equal("Sliced Pork");
+				expect(testRamen.vegetable	).to.equal("Scallions");
+				expect(testRamen.broth 		).to.equal("Miso");
+				expect(testRamen.noodle 	).to.equal("Thin");	
+				expect(testRamen.topping 	).to.equal("Nori");
+				expect(testRamen.extra 		).to.equal(false); 
+			});
+
+			it("should throw an error if the ingredients are not enough", function() {
+				var notEnough = ["Beef", "Bok Choy", "Beef", "Thick"];
+				expect( function() { new Ramen( notEnough ) }).throw(Error);
+			});
+
+			it("should make a ramen with provided ingredients", function() {
+				var myPreference = ["Braised Sliced Pork", "Spinach", "Tonkotsu", 'Thick', "Half-Boiled Egg"];
+				var myRamen = new Ramen(myPreference);
+				expect( myRamen.meat		).to.equal(myPreference[0]);
+				expect( myRamen.vegetable 	).to.equal(myPreference[1]);
+				expect( myRamen.broth 		).to.equal(myPreference[2]);
+				expect( myRamen.noodle 		).to.equal(myPreference[3]);	
+				expect( myRamen.topping 	).to.equal(myPreference[4]);
+				expect( myRamen.extra 		).to.equal(false);
+			});
+		});
+
+		describe("#addExtra", function(){
+			it("should throw an error if extra ingredient isn't provided", function() {
+				var extra1 = "";
+				var extra2 = undefined;
+				expect(function() { new Ramen().addExtra(extra1) }).to.throw(Error);
+				expect(function() { new Ramen().addExtra(extra2) }).to.throw(Error);
+			});
+
+			it("should add an extra ingredient to your ramen", function(){
+				var extra1 = "noodles";
+				var extra2 = "broth";
+				expect( new Ramen().addExtra(extra1) ).to.equal("Adding extra noodles to your ramen");
+				expect( new Ramen().addExtra(extra2) ).to.equal("Adding extra broth to your ramen");
+			});
+		});
+
+		describe("#changeBroth", function() {
+			it("should throw an error if replacement broth isn't provided", function() {
+				var broth1 = "";
+				var broth2 = undefined; 
+				expect(function() { new Ramen().changeBroth(broth1) }).to.throw(Error);
+				expect(function() { new Ramen().changeBroth(broth2) }).to.throw(Error);
+			});
+
+			it("should replace the broth type with the provided replacement", function(){
+				var broth1 = "Beer";
+				var broth2 = "Orange Juice";
+				expect( new Ramen().changeBroth(broth1) ).to.equal("Changed broth from Miso to Beer");
+				expect( new Ramen().changeBroth(broth2) ).to.equal("Changed broth from Miso to Orange Juice");
+			});
+		});
+
+		describe("#checkout", function() {
+			it("should print out the total without extra toppings fee", function() {		
+				expect( new Ramen().checkout() ).to.equal("Your total is $17.18");
+			});
+
+			it("should print out the total with extra toppings fee", function() {		
+				var myRamen = new Ramen();
+				myRamen.addExtra("broth");
+				expect( myRamen.checkout() ).to.equal("Your total is $19.17");
+			});
+
+			it("should print out the total with extra topping and side", function() { 
+				var myRamen = new Ramen();
+				myRamen.addExtra("meat");
+				myRamen.addSideOrder("steamed dumplings");
+				expect( myRamen.checkout() ).to.equal("Your total is $20.16");
+			});
+		});
+
+		describe("addSideOrder", function() {
+			it("should throw an error if a side is not given", function() {
+				var myRamen = new Ramen();
+				expect(function() { myRamen.addSideOrder("") } ).to.throw(Error);
+			});
+		});
+
+		// Sinon Test Case
+		describe("#saveRamen", function() { 
+			var sandbox;
+
+			beforeEach(function() {
+				sandbox = sinon.sandbox.create();
+				sandbox.stub(console, "log");
+				sandbox.stub(console, "error");
+			});
+			
+			afterEach(function() {
+				sandbox.restore();
+			}); 
+
+			it("should throw an error if the name is not provided", function() {
+				var name = "";
+				new Ramen().saveRamen(name);
+				sinon.assert.notCalled(console.log);
+				sinon.assert.calledOnce(console.error);
+				sinon.assert.calledWithExactly(console.error, "You did not give a name for your ramen")
+			});
+
+			it("should save the ingredients of the ramen wrapped by a given name", function() {
+				var myRamen = new Ramen();
+				myRamen.saveRamen("Blue Dragon House Ramen");
+				sinon.assert.notCalled(console.error);
+				sinon.assert.calledOnce(console.log);
+				sinon.assert.calledWithExactly(console.log, "Saved 'Blue Dragon House Ramen'");
+			});
+		});
+		// More test cases added to test Drone.io automatics build
+		describe("#randomRamen", function() {
+			it("should switch up all the ingredients", function() {
+				var myRamen		= new Ramen();
+				var original	= myRamen.list;
+				expect( myRamen.randomize() ).to.be.an.instanceof(Ramen);
+				expect( original ).to.not.eql( myRamen.randomize().list );
+			});
+		});
+	})
+	</script>
 	<script>mocha.run();</script>
 </body>
 </html>
