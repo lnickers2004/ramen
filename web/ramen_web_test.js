@@ -1,7 +1,4 @@
-var expect = require("chai").expect;
-var sinon = require("sinon");
-
-var Ramen = require("./lib/ramen.js");
+var expect = chai.expect;
 
 describe("Ramen", function() { 
 	describe("#make", function() {
@@ -130,16 +127,3 @@ describe("Ramen", function() {
 		});
 	});
 })
-
-
-var express = require("express");
-var app = express();
-var port = Number(process.env.PORT || 8080);
-
-app.get('/', function(req, res) { 
-	res.sendfile('./web/ramen.html');
-});
-
-app.listen(port, function() {
-	console.log("Listening on " + port);
-});

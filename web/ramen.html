@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Ramen Test</title>
+	<link rel="stylesheet" media="all" href="test/mocha.css">
+</head>
+<body>
+	<div id="mocha"><p><a href=".">Index</a></p></div>
+	<div id="messages"></div>
+	<div id="fixtures"></div>
+	<script src="test/mocha.js"></script>
+	<script src="test/chai.js"></script>
+	<script src="test/sinon-1.10.2.js"></script>
+	<script src="ramen_web.js"></script>
+	<script>mocha.setup('bdd')</script>
+	<script src="ramen_web_test.js"></script>
+	<script>mocha.run();</script>
+</body>
+</html>
