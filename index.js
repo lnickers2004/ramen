@@ -1,5 +1,3 @@
-mocha ramen_test.js
-
 var express = require("express");
 var app = express();
 var port = Number(process.env.PORT || 8080);
