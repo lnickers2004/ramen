@@ -9,7 +9,7 @@ describe("Ramen", function() {
 			var testRamen = new Ramen();
 			expect(testRamen.meat		).to.equal("Sliced Pork");
 			expect(testRamen.vegetable	).to.equal("Scallions");
-			expect(testRamen.broth 		).to.equal("Pork");
+			expect(testRamen.broth 		).to.equal("Miso");
 			expect(testRamen.noodle 	).to.equal("Thin");	
 			expect(testRamen.topping 	).to.equal("Nori");
 			expect(testRamen.extra 		).to.equal(false); 
@@ -21,7 +21,7 @@ describe("Ramen", function() {
 		});
 
 		it("should make a ramen with provided ingredients", function() {
-			var myPreference = ["Roasted Sliced Pork", "Spinach", "Beef", 'Thick', "Half-Boiled Egg"];
+			var myPreference = ["Braised Sliced Pork", "Spinach", "Tonkotsu", 'Thick', "Half-Boiled Egg"];
 			var myRamen = new Ramen(myPreference);
 			expect( myRamen.meat		).to.equal(myPreference[0]);
 			expect( myRamen.vegetable 	).to.equal(myPreference[1]);
@@ -59,8 +59,8 @@ describe("Ramen", function() {
 		it("should replace the broth type with the provided replacement", function(){
 			var broth1 = "Beer";
 			var broth2 = "Orange Juice";
-			expect( new Ramen().changeBroth(broth1) ).to.equal("Changed broth from Pork to Beer");
-			expect( new Ramen().changeBroth(broth2) ).to.equal("Changed broth from Pork to Orange Juice");
+			expect( new Ramen().changeBroth(broth1) ).to.equal("Changed broth from Miso to Beer");
+			expect( new Ramen().changeBroth(broth2) ).to.equal("Changed broth from Miso to Orange Juice");
 		});
 	});
 
@@ -73,6 +73,20 @@ describe("Ramen", function() {
 			var myRamen = new Ramen();
 			myRamen.addExtra("broth");
 			expect( myRamen.checkout() ).to.equal("Your total is $19.17");
+		});
+
+		it("should print out the total with extra topping and side", function() { 
+			var myRamen = new Ramen();
+			myRamen.addExtra("meat");
+			myRamen.addSideOrder("steamed dumplings");
+			expect( myRamen.checkout() ).to.equal("Your total is $20.16");
+		});
+	});
+
+	describe("addSideOrder", function() {
+		it("should throw an error if a side is not given", function() {
+			var myRamen = new Ramen();
+			expect(function() { myRamen.addSideOrder("") } ).to.throw(Error);
 		});
 	});
 
@@ -104,6 +118,15 @@ describe("Ramen", function() {
 			sinon.assert.notCalled(console.error);
 			sinon.assert.calledOnce(console.log);
 			sinon.assert.calledWithExactly(console.log, "Saved 'Blue Dragon House Ramen'");
+		});
+	});
+	// More test cases added to test Drone.io automatics build
+	describe("#randomRamen", function() {
+		it("should switch up all the ingredients", function() {
+			var myRamen		= new Ramen();
+			var original	= myRamen.list;
+			expect( myRamen.randomize() ).to.be.an.instanceof(Ramen);
+			expect( original ).to.not.eql( myRamen.randomize().list );
 		});
 	});
 })
